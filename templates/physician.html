@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="card">
+        <h2>签约医师 - 用户信息与健康咨询</h2>
+        <div class="section">
+            <h3>用户信息列表</h3>
+            {% if users %}
+                <table>
+                    <tr>
+                        <th>用户名</th>
+                        <th>性别</th>
+                        <th>年龄</th>
+                        <th>电话</th>
+                        <th>地址</th>
+                        <th>出生日期</th>
+                        <th>紧急联系人</th>
+                        <th>紧急联系电话</th>
+                        <th>健康状况</th>
+                    </tr>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.gender }}</td>
+                        <td>{{ user.age if user.age else '未设置' }}</td>
+                        <td>{{ user.phone }}</td>
+                        <td>{{ user.address if user.address else '未设置' }}</td>
+                        <td>{{ user.birth_date if user.birth_date else '未设置' }}</td>
+                        <td>{{ user.emergency_contact if user.emergency_contact else '未设置' }}</td>
+                        <td>{{ user.emergency_phone if user.emergency_phone else '未设置' }}</td>
+                        <td>{{ user.health_conditions if user.health_conditions else '无健康问题' }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>暂无用户信息</p>
+            {% endif %}
+        </div>
+
+        <div class="section">
+            <h3>健康咨询列表</h3>
+            {% if consultations %}
+                <table>
+                    <tr>
+                        <th>用户</th>
+                        <th>咨询内容</th>
+                        <th>提交时间</th>
+                        <th>回复内容</th>
+                        <th>回复时间</th>
+                        <th>操作</th>
+                    </tr>
+                    {% for consultation in consultations %}
+                    <tr>
+                        <td>{{ consultation.user_username }}</td>
+                        <td>{{ consultation.question }}</td>
+                        <td>{{ consultation.created_at }}</td>
+                        <td>{{ consultation.answer if consultation.answer else '未回复' }}</td>
+                        <td>{{ consultation.answered_at if consultation.answered_at else '未回复' }}</td>
+                        <td>
+                            {% if not consultation.answer %}
+                                <form method="post" class="reply-form">
+                                    <input type="hidden" name="consultation_id" value="{{ consultation.id }}">
+                                    <div class="form-group">
+                                        <textarea name="answer" rows="2" cols="30" required placeholder="输入回复"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" value="提交回复">
+                                    </div>
+                                </form>
+                            {% else %}
+                                已回复
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>暂无健康咨询</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

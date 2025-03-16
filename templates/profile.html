@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="card">
+        <h2>个人信息</h2>
+        <form method="post">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>用户名:</label>
+                    <input type="text" name="username" value="{{ profile.username if profile else '' }}" required>
+                </div>
+                <div class="form-group">
+                    <label>性别:</label>
+                    <select name="gender">
+                        <option value="男" {% if profile and profile.gender == '男' %}selected{% endif %}>男</option>
+                        <option value="女" {% if profile and profile.gender == '女' %}selected{% endif %}>女</option>
+                        <option value="其他" {% if profile and profile.gender == '其他' %}selected{% endif %}>其他</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>年龄:</label>
+                    <input type="number" name="age" value="{{ profile.age if profile else '' }}" required>
+                </div>
+                <div class="form-group">
+                    <label>电话:</label>
+                    <input type="text" name="phone" value="{{ profile.phone if profile else '' }}" required>
+                </div>
+            </div>
+            <!-- 添加区域选择 -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label>省:</label>
+                    <select name="province" id="province" onchange="updateCities()">
+                        <option value="">请选择省</option>
+                        {% for province in provinces %}
+                            <option value="{{ province }}" {% if profile and profile.province == province %}selected{% endif %}>{{ province }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>市:</label>
+                    <select name="city" id="city" onchange="updateDistricts()">
+                        <option value="">请选择市</option>
+                        {% if profile and profile.city %}
+                            {% for city in cities[profile.province] %}
+                                <option value="{{ city }}" {% if profile.city == city %}selected{% endif %}>{{ city }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>区:</label>
+                    <select name="district" id="district">
+                        <option value="">请选择区</option>
+                        {% if profile and profile.district %}
+                            {% for district in districts[profile.city] %}
+                                <option value="{{ district }}" {% if profile.district == district %}selected{% endif %}>{{ district }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>详细地址:</label>
+                    <input type="text" name="address" value="{{ profile.address if profile else '' }}">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>出生日期:</label>
+                    <input type="date" name="birth_date" value="{{ profile.birth_date if profile else '' }}" required>
+                </div>
+                <div class="form-group">
+                    <label>紧急联系人:</label>
+                    <input type="text" name="emergency_contact" value="{{ profile.emergency_contact if profile else '' }}" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>紧急联系人电话:</label>
+                    <input type="text" name="emergency_phone" value="{{ profile.emergency_phone if profile else '' }}" required>
+                </div>
+                <div class="form-group">
+                    <label>健康状况:</label>
+                    <select name="health_conditions" onchange="if(this.value=='其他') document.getElementById('other_health').style.display='block'; else document.getElementById('other_health').style.display='none';">
+                        <option value="无健康问题" {% if profile and profile.health_conditions == '无健康问题' %}selected{% endif %}>无健康问题</option>
+                        <option value="高血压" {% if profile and profile.health_conditions == '高血压' %}selected{% endif %}>高血压</option>
+                        <option value="糖尿病" {% if profile and profile.health_conditions == '糖尿病' %}selected{% endif %}>糖尿病</option>
+                        <option value="心脏病" {% if profile and profile.health_conditions == '心脏病' %}selected{% endif %}>心脏病</option>
+                        <option value="哮喘" {% if profile and profile.health_conditions == '哮喘' %}selected{% endif %}>哮喘</option>
+                        <option value="过敏" {% if profile and profile.health_conditions == '过敏' %}selected{% endif %}>过敏</option>
+                        <option value="关节炎" {% if profile and profile.health_conditions == '关节炎' %}selected{% endif %}>关节炎</option>
+                        <option value="其他" {% if profile and profile.health_conditions not in ['无健康问题', '高血压', '糖尿病', '心脏病', '哮喘', '过敏', '关节炎'] %}selected{% endif %}>其他</option>
+                    </select>
+                    <input type="text" id="other_health" name="other_health_conditions"
+                           value="{% if profile and profile.health_conditions not in ['无健康问题', '高血压', '糖尿病', '心脏病', '哮喘', '过敏', '关节炎'] %}{{ profile.health_conditions }}{% endif %}"
+                           style="display: {% if profile and profile.health_conditions not in ['无健康问题', '高血压', '糖尿病', '心脏病', '哮喘', '过敏', '关节炎'] %}block{% else %}none{% endif %};"
+                           placeholder="请输入其他健康状况">
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="保存">
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // 省市区数据
+        const cities = {{ cities|tojson }};
+        const districts = {{ districts|tojson }};
+
+        function updateCities() {
+            const province = document.getElementById('province').value;
+            const citySelect = document.getElementById('city');
+            const districtSelect = document.getElementById('district');
+
+            // 清空城市和区选项
+            citySelect.innerHTML = '<option value="">请选择市</option>';
+            districtSelect.innerHTML = '<option value="">请选择区</option>';
+
+            if (province && cities[province]) {
+                cities[province].forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.text = city;
+                    citySelect.appendChild(option);
+                });
+            }
+        }
+
+        function updateDistricts() {
+            const city = document.getElementById('city').value;
+            const districtSelect = document.getElementById('district');
+
+            // 清空区选项
+            districtSelect.innerHTML = '<option value="">请选择区</option>';
+
+            if (city && districts[city]) {
+                districts[city].forEach(district => {
+                    const option = document.createElement('option');
+                    option.value = district;
+                    option.text = district;
+                    districtSelect.appendChild(option);
+                });
+            }
+        }
+
+        // 初始化时更新城市和区
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCities();
+            updateDistricts();
+        });
+    </script>
+{% endblock %}

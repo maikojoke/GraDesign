@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="card">
+        <h2>健康信息（最新记录）</h2>
+        {% if health_data and health_data.record_date %}
+            <div class="form-row">
+                <div class="form-group">
+                    <p><strong>记录时间:</strong> {{ health_data.record_date }}</p>
+                </div>
+                <div class="form-group">
+                    <p><strong>心率:</strong> {{ health_data.heart_rate if health_data.heart_rate is not none else '无数据' }}</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <p><strong>血氧饱和度:</strong> {{ health_data.spo2 if health_data.spo2 is not none else '无数据' }}</p>
+                </div>
+                <div class="form-group">
+                    <p><strong>压力:</strong> {{ health_data.stress if health_data.stress is not none else '无数据' }}</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <p><strong>卡路里:</strong> {{ health_data.calorie if health_data.calorie is not none else '无数据' }}</p>
+                </div>
+                <div class="form-group">
+                    <p><strong>睡眠总时长:</strong> {{ health_data.sleep_duration if health_data.sleep_duration is not none else '无数据' }}</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <p><strong>睡眠期间清醒时间:</strong> {{ health_data.sleep_sleep_awake_duration if health_data.sleep_sleep_awake_duration is not none else '无数据' }}</p>
+                </div>
+                <div class="form-group">
+                    <p><strong>深度睡眠时间:</strong> {{ health_data.sleep_sleep_deep_duration if health_data.sleep_sleep_deep_duration is not none else '无数据' }}</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <p><strong>浅度睡眠时间:</strong> {{ health_data.sleep_sleep_light_duration if health_data.sleep_sleep_light_duration is not none else '无数据' }}</p>
+                </div>
+                <div class="form-group">
+                    <p><strong>快速眼动睡眠时间:</strong> {{ health_data.sleep_sleep_rem_duration if health_data.sleep_sleep_rem_duration is not none else '无数据' }}</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <p><strong>睡眠得分:</strong> {{ health_data.sleep_sleep_score if health_data.sleep_sleep_score is not none else '无数据' }}</p>
+                </div>
+                <div class="form-group">
+                    <p><strong>步数:</strong> {{ health_data.step if health_data.step is not none else '无数据' }}</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <p><strong>总卡路里:</strong> {{ health_data.total_cal if health_data.total_cal is not none else '无数据' }}</p>
+                </div>
+                <div class="form-group">
+                    <p><strong>体温:</strong> {{ health_data.body_temperature if health_data.body_temperature is not none else '无数据' }} ℃</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <p><strong>室温:</strong> {{ health_data.room_temperature if health_data.room_temperature is not none else '无数据' }} ℃</p>
+                </div>
+                <div class="form-group">
+                    <p><strong>湿度:</strong> {{ health_data.humidity if health_data.humidity is not none else '无数据' }} %</p>
+                </div>
+            </div>
+        {% else %}
+            <p>{{ health_data.error if health_data.error else '暂无健康数据' }}</p>
+        {% endif %}
+    </div>
+{% endblock %}

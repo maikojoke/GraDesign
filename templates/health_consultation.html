@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="card">
+        <h2>健康咨询</h2>
+        {% if profile %}
+            <h3>个人信息</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <p><strong>姓名:</strong> {{ profile.username }}</p>
+                </div>
+                <div class="form-group">
+                    <p><strong>性别:</strong> {{ profile.gender }}</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <p><strong>年龄:</strong> {{ profile.age if profile.age else '未设置' }}</p>
+                </div>
+                <div class="form-group">
+                    <p><strong>电话:</strong> {{ profile.phone }}</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <p><strong>地址:</strong> {{ profile.address if profile.address else '未设置' }}</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <p><strong>出生日期:</strong> {{ profile.birth_date if profile.birth_date else '未设置' }}</p>
+                </div>
+                <div class="form-group">
+                    <p><strong>紧急联系人:</strong> {{ profile.emergency_contact if profile.emergency_contact else '未设置' }}</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <p><strong>紧急联系电话:</strong> {{ profile.emergency_phone if profile.emergency_phone else '未设置' }}</p>
+                </div>
+                <div class="form-group">
+                    <p><strong>健康状况:</strong> {{ profile.health_conditions if profile.health_conditions else '无健康问题' }}</p>
+                </div>
+            </div>
+
+            <h3>健康咨询回复</h3>
+            {% if consultations %}
+                <table>
+                    <tr>
+                        <th>质询内容</th>
+                        <th>医师</th>
+                        <th>回复内容</th>
+                        <th>回复时间</th>
+                    </tr>
+                    {% for consultation in consultations %}
+                    <tr>
+                        <td>{{ consultation.question }}</td>
+                        <td>{{ consultation.physician_username if consultation.physician_username else '未回复' }}</td>
+                        <td>{{ consultation.answer if consultation.answer else '未回复' }}</td>
+                        <td>{{ consultation.answered_at if consultation.answered_at else '未回复' }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>暂无健康咨询回复</p>
+            {% endif %}
+        {% endif %}
+
+        <h3>提交健康质询</h3>
+        <form method="post">
+            <div class="form-group">
+                <textarea name="question" rows="4" cols="50" required placeholder="请输入您的健康问题"></textarea>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="提交">
+            </div>
+        </form>
+        {% if consultation_response %}
+            <h3>系统建议</h3>
+            <p>{{ consultation_response }}</p>
+        {% endif %}
+
+        <h3>病历档案</h3>
+        {% if medical_records %}
+            <ul>
+            {% for record in medical_records %}
+                <li>{{ record.file_name }} (上传时间: {{ record.upload_date }})
+                    <a href="{{ url_for('download_medical_record', record_id=record.id) }}" download>下载</a></li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>暂无病历档案</p>
+        {% endif %}
+
+        <h3>紧急事件记录（最近3条）</h3>
+        {% if emergency_events %}
+            <table>
+                <tr>
+                    <th>事件类型</th>
+                    <th>发生时间</th>
+                    <th>描述</th>
+                    <th>既往病史</th>
+                    <th>当前状况</th>
+                    <th>药物/设备需求</th>
+                </tr>
+                {% for event in emergency_events %}
+                <tr>
+                    <td>{{ event.event_type }}</td>
+                    <td>{{ event.event_time }}</td>
+                    <td>{{ event.event_description }}</td>
+                    <td>{{ event.past_medical_history }}</td>
+                    <td>{{ event.current_condition }}</td>
+                    <td>{{ event.medication_or_equipment if event.medication_or_equipment else '无' }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>暂无紧急事件记录</p>
+        {% endif %}
+
+        <h3>健康数据状态</h3>
+        {% if health_data.alert_message %}
+            <p class="alert">警告: {{ health_data.alert_message }}，已触发紧急救援！</p>
+        {% elif health_data.error %}
+            <p>{{ health_data.error }}</p>
+        {% else %}
+            <p>健康数据正常</p>
+        {% endif %}
+    </div>
+{% endblock %}

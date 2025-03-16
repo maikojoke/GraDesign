@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #00a2e8;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            height: 100%;
+            overflow: auto;
+        }
+
+        .sidebar h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #fff;
+            padding-bottom: 5px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 10px 0;
+            font-size: 14px;
+        }
+
+        .sidebar a:hover {
+            background-color: #0091cf;
+        }
+
+        .content {
+            margin-left: 220px;
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .header {
+            background-color: #00a2e8;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: calc(100% - 220px);
+            top: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .header nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+            font-size: 14px;
+        }
+
+        .header nav a:hover {
+            text-decoration: underline;
+        }
+
+        .content-wrapper {
+            margin-top: 60px; /* 调整以避免与固定头部的重叠 */
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: #00a2e8;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .card h3 {
+            color: #00a2e8;
+            margin-top: 15px;
+            font-size: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="date"],
+        .form-group textarea,
+        .form-group select,
+        .form-group input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group input[type="submit"] {
+            background-color: #00a2e8;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .form-group input[type="submit"]:hover {
+            background-color: #0091cf;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px; /* Space between the two columns */
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            flex: 1; /* Each form-group takes equal space */
+        }
+
+        .form-group.full-width {
+            flex: 100%; /* Full width for textarea */
+            width: 100%;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="date"],
+        .form-group textarea,
+        .form-group select,
+        .form-group input[type="file"] {
+            width: 100%; /* Ensure inputs fill their container */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #00a2e8;
+            color: white;
+        }
+
+        .alert {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h3>导航</h3>
+            <a href="{{ url_for('profile') }}">个人信息</a>
+            <a href="{{ url_for('emergency') }}">紧急救援</a>
+            <a href="{{ url_for('health_consultation') }}">健康咨询</a>
+            <a href="{{ url_for('family') }}">家属信息</a>
+            <a href="{{ url_for('health_info') }}">健康信息</a>
+            <a href="{{ url_for('health_knowledge') }}">健康知识</a>
+            <a href="{{ url_for('disease_prediction') }}">疾病预测</a>
+            <a href="{{ url_for('first_aid_knowledge') }}">急救知识</a>
+            <a href="{{ url_for('logout') }}">退出</a>
+        </div>
+        <div class="content">
+            <div class="header">
+                <span>居家养老系统</span> <!-- Replaced logo with text -->
+                <nav>
+                    <a href="{{ url_for('logout') }}">退出</a>
+                </nav>
+            </div>
+            <div class="content-wrapper">
+                {% block content %}
+                <!-- 页面特定内容将在这里插入 -->
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

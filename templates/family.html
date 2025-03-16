@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="card">
+        <h2>家属信息</h2>
+        <h3>添加家属</h3>
+        <form method="post">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>姓名:</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>关系:</label>
+                    <input type="text" name="relationship" required placeholder="如：父母、配偶、子女">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>电话:</label>
+                    <input type="text" name="phone">
+                </div>
+                <div class="form-group">
+                    <label>出生日期:</label>
+                    <input type="date" name="birth_date">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label>地址:</label>
+                    <textarea name="address"></textarea>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>健康状况:</label>
+                    <select name="health_conditions" onchange="if(this.value=='其他') document.getElementById('other_health').style.display='block'; else document.getElementById('other_health').style.display='none';">
+                        <option value="无健康问题">无健康问题</option>
+                        <option value="高血压">高血压</option>
+                        <option value="糖尿病">糖尿病</option>
+                        <option value="心脏病">心脏病</option>
+                        <option value="哮喘">哮喘</option>
+                        <option value="过敏">过敏</option>
+                        <option value="关节炎">关节炎</option>
+                        <option value="其他">其他</option>
+                    </select>
+                    <input type="text" id="other_health" name="other_health_conditions" style="display: none;" placeholder="请输入其他健康状况">
+                </div>
+                <div class="form-group">
+                    <!-- Placeholder for symmetry, can be left empty or used for future fields -->
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="添加">
+            </div>
+        </form>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <h3>家属列表</h3>
+        {% if family_members %}
+            <table>
+                <tr>
+                    <th>姓名</th>
+                    <th>关系</th>
+                    <th>电话</th>
+                    <th>地址</th>
+                    <th>出生日期</th>
+                    <th>健康状况</th>
+                    <th>添加时间</th>
+                </tr>
+                {% for member in family_members %}
+                <tr>
+                    <td>{{ member.name }}</td>
+                    <td>{{ member.relationship }}</td>
+                    <td>{{ member.phone if member.phone else '未设置' }}</td>
+                    <td>{{ member.address if member.address else '未设置' }}</td>
+                    <td>{{ member.birth_date if member.birth_date else '未设置' }}</td>
+                    <td>{{ member.health_conditions if member.health_conditions else '无健康问题' }}</td>
+                    <td>{{ member.created_at }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>暂无家属信息</p>
+        {% endif %}
+    </div>
+{% endblock %}

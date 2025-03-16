@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="card">
+        <h2>疾病预测</h2>
+        {% if prediction %}
+            <div class="form-row">
+                <div class="form-group">
+                    <p><strong>潜在风险:</strong></p>
+                    <ul>
+                    {% for risk in prediction.risks %}
+                        <li>{{ risk }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                <div class="form-group">
+                    <p><strong>风险概率:</strong></p>
+                    <ul>
+                    {% for disease, prob in prediction.probabilities.items() %}
+                        <li>{{ disease }}: {{ prob }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <p><strong>建议:</strong></p>
+                    <ul>
+                    {% for suggestion in prediction.suggestions %}
+                        <li>{{ suggestion }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% else %}
+            <p>无法生成预测，请检查数据完整性</p>
+        {% endif %}
+    </div>
+{% endblock %}
